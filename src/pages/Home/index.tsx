@@ -40,7 +40,9 @@ const Home = (): JSX.Element => {
   }, []);
 
   function handleAddProduct(id: number) {
-    // TODO
+    cart.map(product => {
+      
+    })
   }
 
   return (
