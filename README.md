@@ -4,7 +4,6 @@
 
 ![PRINTS](./layouts/logo.png)
 
-Desafio realizado no Programa Ignite - Trilha ReactJS - da [Rocketseat], utilizando **HTML**, **CSS**, **JAVASCRIPT**, **ReactJS** e **Typescript**.
 
 </h3>
 
