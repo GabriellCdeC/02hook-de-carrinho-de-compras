@@ -58,7 +58,7 @@ const Cart = (): JSX.Element => {
         <tbody>
           {cartFormatted.map((product) => {
             return (
-              <tr data-testid="product" key={Math.floor(Math.random() * 1000)}>
+              <tr data-testid="product" key={product.id}>
                 <td>
                   <img src={product.image} alt={product.title} />
                 </td>
