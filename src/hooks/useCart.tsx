@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
 import { toast } from 'react-toastify';
+import { idText } from 'typescript';
 import { api } from '../services/api';
 import { Product, Stock } from '../types';
 
@@ -70,27 +71,21 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     }
   };
 
-  const removeProduct = async (productId: number) => {
+  const removeProduct = (productId: number) => {
     try {
       const updatedCart = [...cart]
-      const productExists = updatedCart.find(product => product.id === productId)
+      const prodcutIndex = updatedCart.findIndex(product => product.id === productId)
 
-      const currentAmount = productExists ? productExists.amount : 0
-      const amount = currentAmount - 1
+      if(prodcutIndex >= 0){
+        updatedCart.splice(prodcutIndex, 1)
+        setCart(updatedCart)
+        localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart))
 
-      if(amount === 1){
-        return
+      }else{
+        throw Error()
       }
 
-      if(productExists){
-        productExists.amount = amount
-        updatedCart.push(productExists)
-      }
 
-      setCart(updatedCart)
-
-      localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart))
-      
     } catch {
       toast.error('Erro na remoção do produto');
     }
@@ -101,9 +96,30 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     amount,
   }: UpdateProductAmount) => {
     try {
-      // TODO
+      if(amount <= 0){
+        return
+      }
+
+      const stock = await api.get(`/stock/${productId}`)
+      const stockAmount = stock.data.amount
+
+      if(amount > stockAmount){
+        toast.error('Quantidade solicitada fora de estoque');
+        return
+      }
+
+      const updatedCart = [...cart]
+      const productExists = updatedCart.find(product => product.id === productId)
+
+      if(productExists){
+        productExists.amount = amount
+        setCart(updatedCart)
+        localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart))
+      }else {
+        throw Error()
+      }
     } catch {
-      // TODO
+      toast.error('Erro na alteração de quantidade do produto');
     }
   };
 
